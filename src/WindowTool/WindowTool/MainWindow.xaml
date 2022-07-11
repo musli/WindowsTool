@@ -1,0 +1,24 @@
+﻿<Window x:Class="WindowTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowTool"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="Button_PreviewMouseLeftButtonUp" PreviewMouseMove="Button_PreviewMouseMove"></Button>
+        <StackPanel Grid.Row="1">
+            <Slider  x:Name="opSli" Value="{Binding Path=Opacity, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="opSli_SourceUpdated"  Ticks="1" Maximum="255" Minimum="1"></Slider>
+            <TextBlock Text="{Binding ElementName=opSli, Path=Value}"></TextBlock>
+            <Slider  x:Name="widSli" Value="{Binding Path=Width, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="widSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="3840" Minimum="1"></Slider>
+            <TextBlock Text="{Binding ElementName=widSli, Path=Value}"></TextBlock>
+            <Slider  x:Name="heSli" Value="{Binding Path=Height, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="heSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="2160" Minimum="1"></Slider>
+            <TextBlock Text="{Binding ElementName=heSli, Path=Value}"></TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>
