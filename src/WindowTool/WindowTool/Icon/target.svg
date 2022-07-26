@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#00000000;}
+	.st1{display:none;}
+</style>
+<g id="图层_1">
+	<g>
+		<circle class="st0" cx="50" cy="50" r="43.5"/>
+		<path d="M50,7c23.71,0,43,19.29,43,43S73.71,93,50,93S7,73.71,7,50S26.29,7,50,7 M50,6C25.7,6,6,25.7,6,50s19.7,44,44,44
+			s44-19.7,44-44S74.3,6,50,6L50,6z"/>
+	</g>
+	<g>
+		<circle class="st0" cx="50" cy="50" r="28.5"/>
+		<path d="M50,22c15.44,0,28,12.56,28,28S65.44,78,50,78S22,65.44,22,50S34.56,22,50,22 M50,21c-16.02,0-29,12.98-29,29
+			s12.98,29,29,29s29-12.98,29-29S66.02,21,50,21L50,21z"/>
+	</g>
+	<g>
+		<path d="M50,42c4.41,0,8,3.59,8,8s-3.59,8-8,8s-8-3.59-8-8S45.59,42,50,42 M50,41c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9
+			S54.97,41,50,41L50,41z"/>
+	</g>
+	<rect x="49.52" width="0.98" height="100"/>
+	<rect y="49.43" width="100" height="1.07"/>
+</g>
+<g id="图层_2" class="st1">
+</g>
+</svg>
