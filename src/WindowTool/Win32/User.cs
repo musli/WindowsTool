@@ -877,6 +877,7 @@ namespace Win32
         [DllImport("user32")] public static extern int ScrollWindowEx(HWND hwnd, int dx, int dy, ref RECT lprcScroll, ref RECT lprcClip, HANDLE hrgnUpdate, ref RECT lprcUpdate, int fuScroll);
         [DllImport("user32")] public static extern int SendDlgItemMessage(HANDLE hDlg, int nIDDlgItem, int wMsg, int wParam, int lParam);
         [DllImport("user32")] public static extern int SendMessage(HWND hwnd, uint wMsg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32")] public static extern int SendMessage(HWND hwnd, uint wMsg, IntPtr wParam, ref MINMAXINFO lParam);
         [DllImport("user32")] public static extern int SendMessage(HWND hwnd, int wMsg, int wParam, string lParam);
         [DllImport("user32")] public static extern int SendMessageCallback(HWND hwnd, int msg, int wParam, int lParam, ref int lpResultCallBack, int dwData);
         [DllImport("user32")] public static extern int SendMessageTimeout(HWND hwnd, int msg, int wParam, int lParam, int fuFlags, int uTimeout, ref int lpdwResult);

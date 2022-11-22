@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -26,39 +28,18 @@ namespace WindowTool
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        #region 字段
         Model winModel = new Model();
         IntPtr windowHandle = IntPtr.Zero;
         IntPtr handle = IntPtr.Zero;
+        int count = 0;
+        StringBuilder sb = new StringBuilder();
+        List<int> pointList = new List<int>();
+        int frequency = 10;
+        #endregion
+
+        #region 属性
         public event PropertyChangedEventHandler PropertyChanged;
-        public MainWindow()
-        {
-            InitializeComponent();
-            this.DataContext = winModel;
-
-            this.Width = 130;
-            this.Height = 300;
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Thread.Sleep(10);
-                    if (isMouseUp || windowHandle == IntPtr.Zero)
-                        continue;
-
-                    Win32.RECT lprect = default(Win32.RECT);
-                    User.GetWindowRect(windowHandle, ref lprect);
-
-                    if (lprect.Top < 0 || lprect.Left < 0)
-                        continue;
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        this.Top = lprect.Top - 25;
-                        this.Left = lprect.Left - 20;
-                    });
-                }
-            });
-        }
         private bool isMouseUp;
 
         public bool IsMouseUp
@@ -70,8 +51,65 @@ namespace WindowTool
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsMouseUp"));
             }
         }
+        #endregion
 
-        int count = 0;
+        #region 方法
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.DataContext = winModel;
+
+            panel.BackColor = System.Drawing.Color.Red;
+            panel.Width = 200;
+            panel.Height = 200;
+            //吸附窗口
+            //Task.Run(() =>
+            //{
+            //    while (true)
+            //    {
+            //        Thread.Sleep(10);
+            //        if (isMouseUp || windowHandle == IntPtr.Zero)
+            //            continue;
+
+            //        Win32.RECT lprect = default(Win32.RECT);
+            //        User.GetWindowRect(windowHandle, ref lprect);
+
+            //        if (lprect.Top < 0 || lprect.Left < 0)
+            //            continue;
+
+            //        if (lprect.Top == 0 && lprect.Left == 0)
+            //            Application.Current.Shutdown();
+
+            //        Debug.WriteLine($"高{lprect.Top}左{lprect.Left}");
+
+            //        try
+            //        {
+            //            Dispatcher.Invoke(() =>
+            //            {
+            //                this.Top = lprect.Top - 25;
+            //                this.Left = lprect.Left - 20;
+            //            });
+            //        }
+            //        catch (Exception)
+            //        {
+            //        }
+
+            //    }
+            //});
+        }
+        #endregion
+
+        #region 事件
+        /// <summary>
+        /// 加载事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+         handle = new WindowInteropHelper(this).Handle;
+        }
         private void Button_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             IsMouseUp = true;//鼠标左右键被按下
@@ -82,7 +120,6 @@ namespace WindowTool
             Cursor = new Cursor(sri.Stream, true);
             Debug.WriteLine("down");
         }
-        StringBuilder sb = new StringBuilder();
         private void Button_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             count++;
@@ -130,7 +167,7 @@ namespace WindowTool
             Debug.WriteLine("up");
 
 
-            //设置透明
+            //开启透明
             int exStyle = User.GetWindowLong(windowHandle, User.GWL_EXSTYLE);
             exStyle |= (int)User.WS_EX_LAYERED;
             //exStyle |= (int)User.WS_EX_APPWINDOW;
@@ -138,7 +175,7 @@ namespace WindowTool
             User.SetWindowLong(windowHandle, User.GWL_EXSTYLE, exStyle);
 
 
-
+            //获取宽高
             Win32.RECT lprect = default(Win32.RECT);
             User.GetWindowRect(windowHandle, ref lprect);
             winModel.Width = lprect.Right - lprect.Left;
@@ -151,28 +188,44 @@ namespace WindowTool
             //User.SetWindowPos(windowHandle, (IntPtr)(0), winModel.Left, winModel.Top, 400, 400, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
 
             //MessageBox.Show($"顶{winModel.Top}左{winModel.Left}宽{winModel.Width}高{winModel.Height}");
-            btnLink_Click(null, null);
         }
-
-
-
+        /// <summary>
+        /// 透明度修改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void opSli_SourceUpdated(object sender, DataTransferEventArgs e)
         {
             User.SetLayeredWindowAttributes(windowHandle, 0xffffff, (byte)Math.Ceiling(255 * (Convert.ToDouble(opSli.Value))), 2);
         }
-
+        /// <summary>
+        /// 宽度修改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void widSli_SourceUpdated(object sender, DataTransferEventArgs e)
         {
+            //锁定横纵比
             winModel.Height = winModel.Width / 16 * 9;
             User.SetWindowPos(windowHandle, (IntPtr)(0), winModel.Left, winModel.Top, winModel.Width, winModel.Height, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
         }
-
+        /// <summary>
+        /// 高度修改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void heSli_SourceUpdated(object sender, DataTransferEventArgs e)
         {
+            //锁定横纵比
             winModel.Width = winModel.Height / 9 * 16;
             User.SetWindowPos(windowHandle, (IntPtr)(0), winModel.Left, winModel.Top, winModel.Width, winModel.Height, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
         }
 
+        /// <summary>
+        /// 宽高修改后记录宽高
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void widSli_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Win32.RECT lprect = default(Win32.RECT);
@@ -180,59 +233,52 @@ namespace WindowTool
             winModel.Top = lprect.Top;
             winModel.Left = lprect.Left;
         }
-        List<int> pointList = new List<int>();
-        int frequency = 10;
 
+        ///// <summary>
+        ///// 预设
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void dd_Click(object sender, RoutedEventArgs e)
+        //{
+        //    User.SetWindowPos(windowHandle, (IntPtr)(0), winModel.Left, winModel.Top, 724, 440, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
+        //}
 
-        private void btnLink_Click(object sender, RoutedEventArgs e)
-        {
-            //var dd = (IntPtr)0x001B0168;
-            //var handle = (new WindowInteropHelper(this)).Handle;
-            //User.SetParent(dd, windowHandle);
-            //User.SetWindowPos(dd, (IntPtr)(0), 0, 0, 100, 100, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
-
-        }
-
-        private void Border_DragOver(object sender, DragEventArgs e)
-        {
-            Debug.WriteLine("拖放完毕");
-        }
-
-        private void Border_Drop(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void dd_MouseMove(object sender, MouseEventArgs e)
-        {
-            // 判断左键是否按下
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
-            //    ////声明DataObject,并打包圆控件的图像绘制方式(包含颜色)、高度及其副本。
-            //    //DataObject data = new DataObject();
-            //    //data.SetData(DataFormats.StringFormat, circleUI.Fill.ToString());
-            //    //data.SetData("Double", circleUI.Height);
-            //    //data.SetData("Object", this);
-
-
-            //}
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-            handle = new WindowInteropHelper(this).Handle;
-        }
-
-        private void dd_Click(object sender, RoutedEventArgs e)
-        {
-            User.SetWindowPos(windowHandle, (IntPtr)(0), winModel.Left, winModel.Top, 724, 440, User.SWP_SHOWWINDOW | User.SWP_NOACTIVATE);
-        }
-
-
+        /// <summary>
+        /// 退出按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        /// <summary>
+        /// 窗口拖动事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+        #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            //   var dd = new MINMAXINFO();
+            //dd.ptMinTrackSize = new POINT() { x = 100, y = 100 };
+            //dd.ptMaxPosition.x =500;
+            //dd.ptMaxPosition.y = 500;
+
+            //dd.ptMaxSize.x = 500;
+            //dd.ptMaxSize.y =500;
+            //User.SendMessage(windowHandle, User.WM_GETMINMAXINFO, IntPtr.Zero, ref dd);
+
+            //panel.BackColor =System.Drawing.Color.Red;
+            User.SetParent(windowHandle, panel.Handle);
         }
     }
     public class Model

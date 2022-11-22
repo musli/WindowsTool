@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowTool"
         xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
-        mc:Ignorable="d"
-        Title="MainWindowddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" Width="100" Height="200" WindowStyle="None" WindowStartupLocation="CenterScreen" AllowsTransparency="True" Background="{x:Null}" Loaded="Window_Loaded">
+        xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        mc:Ignorable="d" 
+        Title="MainWindowddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+       SizeToContent="WidthAndHeight" WindowStyle="None" 
+        
+        Loaded="Window_Loaded" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+    <!--AllowsTransparency="True" Background="{x:Null}"-->
     <Window.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="NormalButtonTemplate">
@@ -20,47 +26,64 @@
             <ControlTemplate x:Key="NoneButtonTemplate">
                 <Border Background="Blue"></Border>
             </ControlTemplate>
+            <Style TargetType="TextBox" x:Key="TextBlockTextBoxStyle">
+                <Setter Property="Background" Value="Transparent"></Setter>
+                <Setter Property="BorderThickness" Value="0"></Setter>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="White"></Setter>
+            </Style>
             <Style x:Key="NormalButton" TargetType="Button">
                 <Setter Property="Template" Value="{StaticResource ResourceKey=NormalButtonTemplate}"/>
-                <!--<Setter Property="ToolTip" Value="{Binding IsMouseUp}"></Setter>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsMouseUp,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Value="True">
-                        <Setter Property="Template" Value="{StaticResource ResourceKey=NoneButtonTemplate}"/>
-                    </DataTrigger>
-                </Style.Triggers>-->
             </Style>
             <ImageBrush x:Key="target" Stretch="Uniform" ImageSource="{svg:SvgImage Source=Icon/target.svg}" x:Shared="false"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid HorizontalAlignment="Stretch" >
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition MinHeight="80"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition MinHeight="80"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
-            <ColumnDefinition />
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition MinWidth="80" />
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
-        <Border  CornerRadius="0" Background="White" Grid.RowSpan="10"/>
-        <Border  CornerRadius="0" Background="White" Grid.ColumnSpan="10"/>
-        <Button x:Name="btnTarget" Style="{StaticResource NormalButton}"  PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="Button_PreviewMouseLeftButtonUp" PreviewMouseMove="Button_PreviewMouseMove" >
-            <Button.ContextMenu>
+        <Border Background="#4FFF" >
+            <Border.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="退出" Click="ExitMenuItem_Click"></MenuItem>
                 </ContextMenu>
-            </Button.ContextMenu>
-        </Button>
-        <Slider  x:Name="opSli" Grid.Row="1" HorizontalAlignment="Center" Orientation="Vertical" Value="{Binding Path=Opacity, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="opSli_SourceUpdated"  Ticks="1" Maximum="255" Minimum="1"></Slider>
-        <TextBlock Grid.Row="2" HorizontalAlignment="Center" Text="{Binding ElementName=opSli, Path=Value}"></TextBlock>
-        <Slider Grid.Column="1" x:Name="widSli" HorizontalAlignment="Stretch" VerticalAlignment="Center" Value="{Binding Path=Width, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="widSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="3840" Minimum="1"></Slider>
-        <TextBlock Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ElementName=widSli, Path=Value}"></TextBlock>
-        <Slider  x:Name="heSli" HorizontalAlignment="Center" Grid.Row="3" Orientation="Vertical" Value="{Binding Path=Height, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="heSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="2160" Minimum="1" FlowDirection="LeftToRight" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5">
+            </Border.ContextMenu>
+        </Border>
+        <Border  CornerRadius="0" Background="#4AAA" Grid.Row="1" Grid.RowSpan="10"/>
+        <Border  CornerRadius="0" Background="#4AAA" Grid.Column="1" Grid.ColumnSpan="10"/>
+
+        <Button Grid.Column="2" x:Name="btnTarget" Margin="0,3" Cursor="Hand" Style="{StaticResource NormalButton}"  PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="Button_PreviewMouseLeftButtonUp" PreviewMouseMove="Button_PreviewMouseMove" />
+
+        <Slider Grid.Column="4" x:Name="widSli" HorizontalAlignment="Stretch" VerticalAlignment="Center" Value="{Binding Path=Width, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="widSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="3840" Minimum="1"></Slider>
+        <TextBox Grid.Column="6" Style="{StaticResource TextBlockTextBoxStyle}" Text="{Binding ElementName=widSli, Path=Value,UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Button Grid.Column="8" Click="Button_Click"></Button>
+        
+        
+        <Slider  x:Name="opSli" Grid.Row="2" HorizontalAlignment="Center" Orientation="Vertical" Value="{Binding Path=Opacity, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="opSli_SourceUpdated"  Ticks="1" Maximum="255" Minimum="1"></Slider>
+        <TextBox Grid.Row="4" Style="{StaticResource TextBlockTextBoxStyle}" Text="{Binding ElementName=opSli, Path=Value,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <Slider  x:Name="heSli" HorizontalAlignment="Center" Grid.Row="6" Orientation="Vertical" Value="{Binding Path=Height, NotifyOnSourceUpdated=True}" Binding.SourceUpdated="heSli_SourceUpdated" PreviewMouseLeftButtonDown="widSli_PreviewMouseLeftButtonDown" Ticks="1" Maximum="2160" Minimum="1" FlowDirection="LeftToRight" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5">
             <Slider.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -70,9 +93,13 @@
                 </TransformGroup>
             </Slider.RenderTransform>
         </Slider>
-        <TextBlock Grid.Row="4" HorizontalAlignment="Center" Text="{Binding ElementName=heSli, Path=Value}"></TextBlock>
-        <!--<Image AllowDrop="True" Grid.Row="5" Source="{svg:SvgImage Source=Icon/target.svg}" Stretch="Uniform"></Image>-->
-        <Button x:Name="dd"  Grid.Row="5" Click="dd_Click"></Button>
-        <Border Background="Aquamarine" AllowDrop="True" Grid.Row="6" Drop="Border_Drop"></Border>
+        <TextBox Grid.Row="8" FontSize="11" Style="{StaticResource TextBlockTextBoxStyle}" Text="{Binding ElementName=heSli, Path=Value,UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!--<Button x:Name="dd"  Grid.Row="10" Click="dd_Click"></Button>-->
+        <!--<Viewbox Grid.Row="1" Grid.Column="1"  Grid.RowSpan="10" Grid.ColumnSpan="10">-->
+            <wfi:WindowsFormsHost  Grid.Row="1" Grid.Column="1"  Grid.RowSpan="10" Grid.ColumnSpan="10">
+                <wf:Panel x:Name="panel"></wf:Panel>
+            </wfi:WindowsFormsHost>
+        <!--</Viewbox>-->
     </Grid>
 </Window>
